@@ -5,7 +5,9 @@ import Tranquilify.demo.DTO.SignUpRequest;
 import Tranquilify.demo.Entities.LoginEntity;
 import Tranquilify.demo.Entities.UserEntity;
 import Tranquilify.demo.Service.LoginService;
+import Tranquilify.demo.Service.PasswordHashService;
 import Tranquilify.demo.Service.UserService;
+import Tranquilify.demo.Util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,18 +26,45 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    public LoginController(UserService userService, LoginService loginService) {
+    private final PasswordHashService passwordService;
+
+    private final JwtUtil jwtService;
+
+    public LoginController(UserService userService, LoginService loginService, PasswordHashService passwordService, JwtUtil jwtService) {
         this.userService = userService;
         this.loginService = loginService;
+        this.passwordService = passwordService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/sign_in")
-    public ResponseEntity<LoginEntity> getLogin(@RequestBody LoginRequest temp){
+    public ResponseEntity<String> getLogin(@RequestBody LoginRequest temp){
 
         Optional<LoginEntity> loginInfo = loginService.findByEmail(temp.getEmail());
 
-        return loginInfo.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (loginInfo.isEmpty()) return new ResponseEntity<>("Sorry, no user found", HttpStatus.NOT_FOUND);
+
+        else{
+
+            String p1 = passwordService.getHashedPass(temp.getPassword());
+
+            String p2 = loginInfo.get().getPassword();
+
+            if (p1.equals(p2)) {
+
+                System.out.println(temp.getEmail());
+
+                UserEntity user = loginInfo.get().getUser();
+
+                Long userId = user.getUserId();
+
+                String token = jwtService.generateAccessToken(user.getUserId());
+
+                return new ResponseEntity<>(token, HttpStatus.OK);
+            }
+
+            else return new ResponseEntity<>("Email or password is incorrect", HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PostMapping("/sign_up")
@@ -56,7 +85,9 @@ public class LoginController {
 
         LoginEntity newLogin = new LoginEntity();
 
-        newLogin.setEmail(temp.getEmail()); newLogin.setPassword(temp.getPassword());
+        String hashPassword = passwordService.getHashedPass(temp.getPassword());
+
+        newLogin.setEmail(temp.getEmail()); newLogin.setPassword(hashPassword);
 
         newLogin.setUser(newUser);
 
