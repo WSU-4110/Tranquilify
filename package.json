@@ -1,0 +1,20 @@
+{
+  "name": "tranquilify",
+  "version": "1.0.0",
+  "description": "Tranquilify is a comprehensive mental health support application designed to track, manage, and improve mental well-being.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WSU-4110/Tranquilify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WSU-4110/Tranquilify/issues"
+  },
+  "homepage": "https://github.com/WSU-4110/Tranquilify#readme"
+}
