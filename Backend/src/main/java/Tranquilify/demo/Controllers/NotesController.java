@@ -4,8 +4,9 @@ import Tranquilify.demo.Entities.NotesEntity;
 import Tranquilify.demo.Entities.UserEntity;
 import Tranquilify.demo.Service.NoteService;
 import Tranquilify.demo.Service.UserService;
-import Tranquilify.demo.Util.JwtUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,63 +22,55 @@ import java.util.Optional;
 public class NotesController {
 
     private final NoteService noteService;
-
-    private final JwtUtil jwtService;
-
     private final UserService userService;
 
-    public NotesController(NoteService noteService, JwtUtil jwtService, UserService userService) {
+    public NotesController(NoteService noteService, UserService userService) {
         this.noteService = noteService;
-        this.jwtService = jwtService;
         this.userService = userService;
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<NotesEntity>> getNotes(@RequestBody Map<String, String> body){
+    public ResponseEntity<List<NotesEntity>> getNotes() {
 
-        String token = body.get("token");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(token != null && !token.isEmpty()){
+        Long userId = (Long) authentication.getPrincipal();
 
-            Long UserId = jwtService.extractUserID(token);
+        List<NotesEntity> notes = noteService.findNotesById(userId);
 
-            List<NotesEntity> notes = noteService.findNotesById(UserId);
-
-            if (notes.isEmpty()) {
-
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(notes);
+        if (notes.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.badRequest().build() ;
+        return ResponseEntity.ok(notes);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addNote(@RequestBody Map<String, String> body){
+    public ResponseEntity<String> addNote(@RequestBody Map<String, String> body) {
 
         String content = body.get("content");
 
-        String token = body.get("token");
+        if (content != null && !content.isEmpty()) {
 
-        if(token != null && !token.isEmpty() && content != null && !content.isEmpty()){
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            Long UserId = jwtService.extractUserID(token);
+            Long userId = (Long) authentication.getPrincipal();
 
-            Optional<UserEntity> user = userService.findUserById(UserId);
+            Optional<UserEntity> user = userService.findUserById(userId);
 
-            NotesEntity note = new NotesEntity();
+            if (user.isPresent()) {
+                NotesEntity note = new NotesEntity();
+                note.setContent(content);
+                note.setUser(user.get());
 
-            note.setContent(content);  note.setUser(user.get());
+                noteService.saveNote(note);
 
-            noteService.saveNote(note);
-
-            return ResponseEntity.ok("Note added successfully");
+                return ResponseEntity.ok("Note added successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
 
-        return ResponseEntity.badRequest().build() ;
+        return ResponseEntity.badRequest().build();
     }
 }
-
-

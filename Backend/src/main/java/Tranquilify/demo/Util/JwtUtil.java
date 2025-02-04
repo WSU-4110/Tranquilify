@@ -1,15 +1,27 @@
 package Tranquilify.demo.Util;
 
+import Tranquilify.demo.Entities.UserEntity;
+import Tranquilify.demo.Service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
+
 @Service
 public class JwtUtil {
 
     private Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    @Autowired
+    private UserService userService;
+
+    public JwtUtil(UserService userService) {
+        this.userService = userService;
+    }
 
     public String generateAccessToken(Long userID) {
         return Jwts.builder()
@@ -56,8 +68,10 @@ public class JwtUtil {
                 .getSubject());
     }
 
-    public boolean validateToken(String token, Long userID) {
+    public boolean validateToken(String token) {
 
-        return (userID.equals(extractUserID(token)));
+        Optional<UserEntity> user = userService.findUserById(extractUserID(token));
+
+        return user.isEmpty() ? false : true;
     }
 }

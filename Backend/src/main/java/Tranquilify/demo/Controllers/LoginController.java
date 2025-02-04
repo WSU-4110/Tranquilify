@@ -52,8 +52,6 @@ public class LoginController {
 
             if (p1.equals(p2)) {
 
-                System.out.println(temp.getEmail());
-
                 UserEntity user = loginInfo.get().getUser();
 
                 Long userId = user.getUserId();
