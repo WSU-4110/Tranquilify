@@ -7,4 +7,4 @@ Tranquilify is a comprehensive mental health support application designed to tra
 * Abdalaa Zwen (hl4371@wayne.edu)
 * Hiba Rababeh (hj0207@wayne.edu)
 * Khadija Husan (hk4830@wayne.edu)
-* Zachary Marabeas (@wayne.edu)
+* Zachary Marabeas (gx4993@wayne.edu)
