@@ -1,7 +1,16 @@
 import { Text, View, TextInput, Button } from "react-native";
+//import navigation
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import React from "react";
+import journal from "../screens/journal";
 
 export default function Index() {
+
+  const [login, setLogin] = useState(false);
+
   return (
+
     <View
       style={{
         flex: 1,
