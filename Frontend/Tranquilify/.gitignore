@@ -9,9 +9,6 @@ dist/
 web-build/
 expo-env.d.ts
 
-package-lock.json
-package.json
-
 # Native
 *.orig.*
 *.jks
