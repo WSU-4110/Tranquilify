@@ -1,11 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
-export default function LoginScreen(props) {
+export default function LoginScreen() {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigation = useNavigation();
+
 
   const handleLogin = async () => {
     // Simple validation: Ensure both fields are filled.

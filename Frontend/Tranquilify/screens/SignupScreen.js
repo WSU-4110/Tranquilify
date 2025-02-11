@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-export default function SignupScreen({ navigation }) {
+export default function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigation = useNavigation();
+
 
   const handleSignup = async () => {
     // Replace with your actual backend API endpoint
     const API_URL = 'https://your-backend-url.com/signup';
 
     try {
-      const response = await axios.post(API_URL, { email, password });
+      //const response = await axios.post(API_URL, { email, password });
       Alert.alert('Signup Successful', 'You can now log in.');
       navigation.navigate('Login');
     } catch (error) {
