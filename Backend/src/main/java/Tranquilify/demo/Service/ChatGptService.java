@@ -1,40 +1,42 @@
 package com.tranquilify.service;
 
-import com.tranquilify.dto.ChatGptRequestDTO;
-import com.tranquilify.dto.ChatGptResponseDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import java.util.Collections;
+import org.springframework.web.client.RestTemplate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ChatGptService {
 
-    @Value("${openai.api.key}")
-    private String apiKey;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    private final String API_KEY = "YOUR_OPENAI_API_KEY";
 
-    private final WebClient webClient;
+    public List<String> getResponse(String userMessage) {
 
-    public ChatGptService() {
-        this.webClient = WebClient.builder()
-                .baseUrl("https://api.openai.com/v1/chat/completions")
-                .defaultHeader("Authorization", "Bearer " + apiKey)
-                .defaultHeader("Content-Type", "application/json")
-                .build();
+        List<String> responses = new ArrayList<>();
+
+        responses.add(callChatGpt(userMessage));
+        responses.add(callChatGpt("Can you elaborate on that?"));
+        responses.add(callChatGpt("How does that make you feel?"));
+
+        return responses;
     }
 
-    public Mono<String> askChatGpt(String userMessage) {
-        ChatGptRequestDTO request = new ChatGptRequestDTO(
-                "gpt-3.5-turbo",
-                Collections.singletonList(new ChatGptRequestDTO.Message("user", userMessage)),
-                100
-        );
+    private String callChatGpt(String prompt) {
 
-        return webClient.post()
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(ChatGptResponseDTO.class)
-                .map(response -> response.getChoices().get(0).getMessage().getContent());
+        String requestJson = "{ \"model\": \"gpt-4\", \"messages\": [{\"role\": \"system\", \"content\": \"You are a therapist.\"}, {\"role\": \"user\", \"content\": \"" + prompt + "\"}], \"temperature\": 0.7 }";
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(API_KEY);
+
+
+        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
+        ResponseEntity<String> response = restTemplate.exchange(OPENAI_API_URL, HttpMethod.POST, request, String.class);
+
+        JsonNode root = new ObjectMapper().readTree(response.getBody());
+        return root.path("choices").get(0).path("message").path("content").asText();
     }
 }

@@ -1,19 +1,32 @@
-package com.tranquilify.controller;
+package com.example.chatbot.controller;
 
-import com.tranquilify.service.ChatGptService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
+import org.springframework.http.ResponseEntity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chat")
+@CrossOrigin(origins = "*")
 public class ChatGptController {
 
-    @Autowired
-    private ChatGptService chatGptService;
+    private final ChatGptService chatGptService;
+
+    public ChatGptController(ChatGptService chatGptService) {
+        this.chatGptService = chatGptService;
+    }
 
     @PostMapping("/ask")
-    public Mono<String> askChatGpt(@RequestBody String userMessage) {
-        return chatGptService.askChatGpt(userMessage);
+    public ResponseEntity<List<String>> askChatGPT(@RequestBody Map<String, String> request) {
+        String userMessage = request.get("message");
+
+
+        List<String> responses = new ArrayList<>();
+        responses.add(chatGptService.getResponse(userMessage)); // Main response
+        responses.add(chatGptService.getResponse("Can you elaborate on that?")); // Follow-up prompt
+        responses.add(chatGptService.getResponse("How does that make you feel?")); // Emotional prompt
+
+        return ResponseEntity.ok(responses);
     }
 }
