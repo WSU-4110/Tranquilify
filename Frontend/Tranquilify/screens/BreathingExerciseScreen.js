@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 
 export default function BreathingExerciseScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [intervalId, setIntervalId] = useState(null);
+  const [feedback, setFeedback] = useState('');
+  const [longestSession, setLongestSession] = useState(0);
+  const scaleAnim = useState(new Animated.Value(1))[0];
+
+  useEffect(() => {
+    if (elapsedTime > 0 && elapsedTime % 10 === 0) {
+      setFeedback('Great job! Keep going!');
+    } else if (elapsedTime > 0 && elapsedTime % 30 === 0) {
+      setFeedback('You are doing amazing! Feel the relaxation.');
+    } else {
+      setFeedback('');
+    }
+  }, [elapsedTime]);
 
   const startExercise = () => {
     if (!isRunning) {
@@ -13,6 +26,7 @@ export default function BreathingExerciseScreen() {
         setElapsedTime((prev) => prev + 1);
       }, 1000);
       setIntervalId(id);
+      animateBreathing();
     }
   };
 
@@ -20,6 +34,9 @@ export default function BreathingExerciseScreen() {
     if (isRunning) {
       setIsRunning(false);
       clearInterval(intervalId);
+      if (elapsedTime > longestSession) {
+        setLongestSession(elapsedTime);
+      }
     }
   };
 
@@ -29,27 +46,33 @@ export default function BreathingExerciseScreen() {
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
+  const animateBreathing = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleAnim, { toValue: 1.5, duration: 4000, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1, duration: 4000, useNativeDriver: true }),
+      ])
+    ).start();
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Breathing Exercise</Text>
       <Text style={styles.subtitle}>Focus on your breath and relax</Text>
+      <Animated.View style={[styles.breathingCircle, { transform: [{ scale: scaleAnim }] }]} />
       <View style={styles.timerContainer}>
         <Text style={styles.timerText}>{formatTime(elapsedTime)}</Text>
       </View>
+      <Text style={styles.feedbackText}>{feedback}</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.startButton]}
-          onPress={startExercise}
-        >
+        <TouchableOpacity style={[styles.button, styles.startButton]} onPress={startExercise}>
           <Text style={styles.buttonText}>Start Exercise</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, styles.stopButton]}
-          onPress={stopExercise}
-        >
+        <TouchableOpacity style={[styles.button, styles.stopButton]} onPress={stopExercise}>
           <Text style={styles.buttonText}>Stop Exercise</Text>
         </TouchableOpacity>
       </View>
+      <Text style={styles.recordText}>Longest Session: {formatTime(longestSession)}</Text>
     </View>
   );
 }
@@ -75,6 +98,14 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 12,
   },
+  breathingCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#0D47A1',
+    opacity: 0.5,
+    marginVertical: 20,
+  },
   timerContainer: {
     width: Dimensions.get('window').width - 64,
     height: 120,
@@ -93,6 +124,12 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     color: '#0D47A1',
+  },
+  feedbackText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#388E3C',
+    marginVertical: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -115,5 +152,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  recordText: {
+    fontSize: 14,
+    marginTop: 20,
+    color: '#333',
   },
 });
