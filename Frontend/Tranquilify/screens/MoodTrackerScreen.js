@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import { useContext } from 'react';
+import { AuthContext } from '../AuthContext';
 
 export default function MoodTrackerScreen() {
   // Store mood entries as objects with a date and a numeric mood value
   const [moodData, setMoodData] = useState([]);
+  const { signOut } = useContext(AuthContext);
 
   // Define the mood levels with corresponding emojis (values from 1 to 10)
   const moodEmojis = [
@@ -42,6 +45,9 @@ export default function MoodTrackerScreen() {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={signOut}>
+        <Text>Sign Out</Text>
+      </TouchableOpacity>
       <Text style={styles.title}>Mood Tracker</Text>
       <Text style={styles.subtitle}>Select your mood for today:</Text>
       

@@ -18,13 +18,22 @@ export default function LoginScreen() {
       return;
     }
 
-    // Replace with your actual backend API endpoint
-
-    // Replace with your actual backend API endpoint
-    //const API_URL = 'localhost:3000/login';
-    //const response = await axios.post(API_URL, { email, password });
-
-    const token = '12345';
+    // const API_URL = '35.16.81.152:9191/login/sign_in';
+    // console.log('sending request to: ' + API_URL);
+    // const response = await fetch(API_URL, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ email, password }),
+    // });
+    // console.log(response.status, response);
+    // if(response.status !== 200) {
+    //   Alert.alert('Login Failed', 'Invalid email or password.');
+    //   return;
+    // }
+    const token = '1234';
+    console.log(token);
 
     signIn(token);
 

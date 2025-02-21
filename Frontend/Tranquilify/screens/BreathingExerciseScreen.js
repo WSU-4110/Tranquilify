@@ -1,9 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useContext } from 'react';
+import { AuthContext } from '../AuthContext';
 
 export default function BreathingExerciseScreen({ navigation }) {
+  const { signOut } = useContext(AuthContext);
   return (
+
     <View style={styles.container}>
+      <TouchableOpacity style={styles.signout} onPress={signOut}>
+        <Text>Sign Out</Text>
+      </TouchableOpacity>
+      <Button title="Sign Out" onPress={signOut} />
+
+
+
       <Text style={styles.title}>Breathing Exercise</Text>
       <View style={styles.sessionCircle}>
         <Text style={styles.sessionText}>3</Text>
@@ -57,5 +68,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  signout: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
   },
 });

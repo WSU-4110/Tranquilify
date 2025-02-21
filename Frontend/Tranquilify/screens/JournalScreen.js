@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { AuthContext } from '../AuthContext';
+import { useContext } from 'react';
 
 const JournalEntry = () => {
   // State to store journal entries.
@@ -19,6 +21,8 @@ const JournalEntry = () => {
   const [editingEntryId, setEditingEntryId] = useState(null);
   // State for the editing text.
   const [editingText, setEditingText] = useState('');
+
+  const { signOut } = useContext(AuthContext);
 
   // Function to add a new journal entry.
   const addEntry = () => {
@@ -110,6 +114,12 @@ const JournalEntry = () => {
 
   return (
     <View style={styles.container}>
+
+      <TouchableOpacity onPress={signOut}>
+        <Text>Sign Out</Text>
+      </TouchableOpacity>
+      <Button title="Sign Out" onPress={signOut} />
+
       <Text style={styles.header}>Journal Entries</Text>
 
       {/* List of Journal Entries */}
