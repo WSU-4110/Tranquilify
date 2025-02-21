@@ -11,6 +11,12 @@ import {
 } from 'react-native';
 import { AuthContext } from '../AuthContext';
 import { useContext } from 'react';
+import {
+  AddEntryCommand,
+  DeleteEntryCommand,
+  SaveEditCommand,
+  CancelEditCommand,
+} from '../js/JournalCommand';
 
 const JournalEntry = () => {
   // State to store journal entries.
@@ -24,23 +30,16 @@ const JournalEntry = () => {
 
   const { signOut } = useContext(AuthContext);
 
-  // Function to add a new journal entry.
+  // Command-based function to add a new journal entry.
   const addEntry = () => {
-    if (newEntry.trim()) {
-      // Using Date.now() as both id and timestamp.
-      const timestamp = Date.now();
-      const entry = {
-        id: timestamp.toString(),
-        text: newEntry.trim(),
-      };
-      setEntries([entry, ...entries]);
-      setNewEntry('');
-    }
+    const command = new AddEntryCommand(newEntry, entries, setEntries, setNewEntry);
+    command.execute();
   };
 
-  // Function to delete an entry by its id.
+  // Command-based function to delete an entry.
   const deleteEntry = (id) => {
-    setEntries(entries.filter((entry) => entry.id !== id));
+    const command = new DeleteEntryCommand(id, entries, setEntries);
+    command.execute();
   };
 
   // Function to start editing an entry.
@@ -49,24 +48,19 @@ const JournalEntry = () => {
     setEditingText(entry.text);
   };
 
-  // Function to save the edited entry.
+  // Command-based function to save the edited entry.
   const saveEdit = () => {
-    if (editingText.trim()) {
-      const updatedEntries = entries.map((entry) => {
-        if (entry.id === editingEntryId) {
-          return { ...entry, text: editingText.trim() };
-        }
-        return entry;
-      });
-      setEntries(updatedEntries);
-      cancelEditing();
-    }
+    const command = new SaveEditCommand(editingText, editingEntryId, entries, setEntries, cancelEditing);
+    command.execute();
   };
 
-  // Function to cancel editing.
+  // Command-based function to cancel editing.
   const cancelEditing = () => {
-    setEditingEntryId(null);
-    setEditingText('');
+    const command = new CancelEditCommand(() => {
+      setEditingEntryId(null);
+      setEditingText('');
+    });
+    command.execute();
   };
 
   // Render each journal entry.
@@ -118,7 +112,6 @@ const JournalEntry = () => {
       <TouchableOpacity onPress={signOut}>
         <Text>Sign Out</Text>
       </TouchableOpacity>
-      <Button title="Sign Out" onPress={signOut} />
 
       <Text style={styles.header}>Journal Entries</Text>
 
