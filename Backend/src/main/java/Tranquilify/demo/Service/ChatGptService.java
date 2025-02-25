@@ -4,6 +4,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
+package com.tranquilify.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class ChatGptService {
+
+    @Autowired
+    private MainResponseStrategy mainResponseStrategy;
+    @Autowired
+    private FollowUpResponseStrategy followUpResponseStrategy;
+    @Autowired
+    private EmotionalResponseStrategy emotionalResponseStrategy;
+
+    public List<String> getResponse(String userMessage) {
+        List<String> responses = new ArrayList<>();
+
+        // Using strategies to get different types of responses
+        responses.add(mainResponseStrategy.getResponse(userMessage));  // Main response
+        responses.add(followUpResponseStrategy.getResponse(userMessage));  // Follow-up
+        responses.add(emotionalResponseStrategy.getResponse(userMessage));  // Emotional response
+
+        return responses;
+    }
+}
+
 
 @Service
 public class ChatGptService {
