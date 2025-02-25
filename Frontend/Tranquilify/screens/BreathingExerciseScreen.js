@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 
+class Observer {
+  constructor() {
+    this.subscribers = [];
+  }
+
+  subscribe(callback) {
+    this.subscribers.push(callback);
+  }
+
+  notify(data) {
+    this.subscribers.forEach((callback) => callback(data));
+  }
+}
+
 export default function BreathingExerciseScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -9,21 +23,29 @@ export default function BreathingExerciseScreen() {
   const [longestSession, setLongestSession] = useState(0);
   const scaleAnim = useState(new Animated.Value(1))[0];
 
+  const timeObserver = new Observer();
+
   useEffect(() => {
-    if (elapsedTime > 0 && elapsedTime % 10 === 0) {
-      setFeedback('Great job! Keep going!');
-    } else if (elapsedTime > 0 && elapsedTime % 30 === 0) {
-      setFeedback('You are doing amazing! Feel the relaxation.');
-    } else {
-      setFeedback('');
-    }
-  }, [elapsedTime]);
+    timeObserver.subscribe((time) => {
+      if (time > 0 && time % 10 === 0) {
+        setFeedback('Great job! Keep going!');
+      } else if (time > 0 && time % 30 === 0) {
+        setFeedback('You are doing amazing! Feel the relaxation.');
+      } else {
+        setFeedback('');
+      }
+    });
+  }, []);
 
   const startExercise = () => {
     if (!isRunning) {
       setIsRunning(true);
       const id = setInterval(() => {
-        setElapsedTime((prev) => prev + 1);
+        setElapsedTime((prev) => {
+          const newTime = prev + 1;
+          timeObserver.notify(newTime); 
+          return newTime;
+        });
       }, 1000);
       setIntervalId(id);
       animateBreathing();
