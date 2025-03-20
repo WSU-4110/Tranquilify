@@ -1,26 +1,26 @@
 import React, { createContext, useState } from 'react';
 
 export const AuthContext = createContext({
-  userToken: null,
+  uid: null,
   signIn: () => {},
   signOut: () => {},
 });
 
 export function AuthProvider({ children }) {
-  const [userToken, setUserToken] = useState(null);
+  const [uid, setUID] = useState(null);
 
   // This function will be called on successful login
   const signIn = (token) => {
-    setUserToken(token);
+    setUID(token);
   };
 
   // You can also implement signOut to clear the token
   const signOut = () => {
-    setUserToken(null);
+    setUID(null);
   };
 
   return (
-    <AuthContext.Provider value={{ userToken, signIn, signOut }}>
+    <AuthContext.Provider value={{ uid, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

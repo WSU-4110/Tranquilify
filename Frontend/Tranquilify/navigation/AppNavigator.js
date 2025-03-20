@@ -5,11 +5,11 @@ import HomeNavigator from './HomeNavigator';
 import { AuthContext, AuthProvider } from '../AuthContext';
 
 function RootNavigator() {
-  const { userToken } = useContext(AuthContext);
+  const { uid } = useContext(AuthContext);
 
   return (
     <NavigationContainer>
-      {userToken == null ? <AuthNavigator /> : <HomeNavigator userToken={userToken}/>}
+      {uid == null ? <AuthNavigator /> : <HomeNavigator uid={uid}/>}
     </NavigationContainer>
   );
 }

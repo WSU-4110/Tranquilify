@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MoodTrackerScreen from '../screens/MoodTrackerScreen.js';
 import BreathingExerciseScreen from '../screens/BreathingExerciseScreen.js';
 import JournalScreen from '../screens/JournalScreen.js';
+import MessagingScreen from '../screens/MessagingScreen.js';
 
 const HomeTab = createBottomTabNavigator();
 
@@ -23,6 +24,12 @@ export default function HomeNavigator(props) {
         name="Journal"
         component={JournalScreen}
         options={{ title: 'Journal' }}
+        userToken={props.userToken}
+      />
+      <HomeTab.Screen
+        name="Messaging"
+        component={MessagingScreen}
+        options={{ title: 'Messaging' }}
         userToken={props.userToken}
       />
     </HomeTab.Navigator>

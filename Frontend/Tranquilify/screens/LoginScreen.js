@@ -32,7 +32,7 @@ export default function LoginScreen() {
     //   Alert.alert('Login Failed', 'Invalid email or password.');
     //   return;
     // }
-    const token = '1234';
+    const token = 'user1UID';
     console.log(token);
 
     signIn(token);
