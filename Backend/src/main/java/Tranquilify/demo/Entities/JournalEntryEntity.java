@@ -1,49 +1,8 @@
-package Tranquilify.demo.Entities;
+package com.tranquilify.demo.Entities;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "Notes")
-public class NotesEntity {
-
-    @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long noteId;
-
-    @Column(name = "content")
-    private String content;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "User_Id", referencedColumnName = "UserID")
-    private UserEntity user;
-
-    public NotesEntity() {
-    }
-
-    public Long getNoteId() {
-        return noteId;
-    }
-
-    public void setNoteId(Long noteId) {
-        this.noteId = noteId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-}
 @Entity
 @Table(name = "journal_entries")
 public class JournalEntryEntity {
@@ -61,7 +20,7 @@ public class JournalEntryEntity {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Getters and Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
