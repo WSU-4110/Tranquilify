@@ -5,15 +5,15 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Notes")
-public class NotesEntity {
+@Table(name = "mood")
+public class MoodEntity {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long noteId;
+    private Long moodId;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "value")
+    private Long value;
 
     @Column(name = "date")
     private Date date;
@@ -22,27 +22,32 @@ public class NotesEntity {
     @JoinColumn(name = "User_Id", referencedColumnName = "UserID")
     private UserEntity user;
 
-    public NotesEntity() {
+
+    public MoodEntity() {
     }
 
-    public Date getDate() { return date; }
-
-    public void setDate(Date date) { this.date = date; }
-
-    public Long getNoteId() {
-        return noteId;
+    public Long getMoodId() {
+        return moodId;
     }
 
-    public void setNoteId(Long noteId) {
-        this.noteId = noteId;
+    public void setMoodId(Long moodId) {
+        this.moodId = moodId;
     }
 
-    public String getContent() {
-        return content;
+    public Long getValue() {
+        return value;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setValue(Long value) {
+        this.value = value;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public UserEntity getUser() {

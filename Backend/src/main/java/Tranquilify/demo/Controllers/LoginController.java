@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/login")
+@RequestMapping("api/login")
 public class LoginController {
 
     private final UserService userService;
@@ -37,12 +37,12 @@ public class LoginController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/sign_in")
+    @PostMapping("/sign_in")
     public ResponseEntity<String> getLogin(@RequestBody LoginRequest temp){
 
         Optional<LoginEntity> loginInfo = loginService.findByEmail(temp.getEmail());
 
-        if (loginInfo.isEmpty()) return new ResponseEntity<>("Sorry, no user found", HttpStatus.NOT_FOUND);
+        if (loginInfo.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry, no user found");
 
         else{
 
@@ -61,7 +61,7 @@ public class LoginController {
                 return new ResponseEntity<>(token, HttpStatus.OK);
             }
 
-            else return new ResponseEntity<>("Email or password is incorrect", HttpStatus.UNAUTHORIZED);
+            else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or password is incorrect");
         }
     }
 

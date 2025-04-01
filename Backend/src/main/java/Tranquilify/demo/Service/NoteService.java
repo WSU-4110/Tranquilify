@@ -1,14 +1,16 @@
 package Tranquilify.demo.Service;
 
 import Tranquilify.demo.Entities.NotesEntity;
-import Tranquilify.demo.Entities.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NoteService {
 
-    List<NotesEntity> findNotesById(Long UserId);
+    List<NotesEntity> findNotesByUserId(Long UserId);
+
+    Optional<NotesEntity> findNotesById(Long noteId);
     NotesEntity saveNote(NotesEntity Note);
 
-    void deleteUser(NotesEntity Note);
+    void deleteNote(NotesEntity Note);
 }
