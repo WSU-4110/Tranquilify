@@ -1,7 +1,10 @@
 package Tranquilify.demo.DTO;
 
+import org.springframework.lang.NonNull;
+
 public class SignUpRequest {
 
+    @NonNull
     private String firstName, lastName, email, password;
 
     public String getFirstName() {

@@ -1,7 +1,9 @@
 package Tranquilify.demo.DTO;
 
-public class LoginRequest {
+import org.springframework.lang.NonNull;
 
+public class LoginRequest {
+    @NonNull
     private String email, password;
 
     public String getEmail() {

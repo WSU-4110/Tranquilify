@@ -2,7 +2,7 @@ package com.tranquilify.dto;
 
 import java.util.List;
 
-public class ChatGptResponseDTO {
+public class ChatGptResponse {
     private List<Choice> choices;
 
     public List<Choice> getChoices() {

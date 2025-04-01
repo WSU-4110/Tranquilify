@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("api/users")
 public class UserController {
 
     @Autowired
@@ -24,9 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<UserEntity> getUser(@RequestBody Map<String, String> body) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<UserEntity> getUser(Authentication authentication) {
 
         Long userId = (Long) authentication.getPrincipal();
 

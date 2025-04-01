@@ -6,6 +6,8 @@ import Tranquilify.demo.Service.NoteService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class NoteServiceImpl implements NoteService {
 
@@ -16,9 +18,15 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<NotesEntity> findNotesById(Long UserId) {
+    public List<NotesEntity> findNotesByUserId(Long UserId) {
 
         return NoteRepo.findByUser_UserId(UserId);
+    }
+
+    @Override
+    public Optional<NotesEntity> findNotesById(Long noteId) {
+
+        return NoteRepo.findById(noteId);
     }
 
     @Override
@@ -27,7 +35,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void deleteUser(NotesEntity Note) {
+    public void deleteNote(NotesEntity Note) {
 
         NoteRepo.delete(Note);
     }
