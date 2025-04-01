@@ -58,6 +58,20 @@ class Observer {
   }
 }
 
+class Observer {
+  constructor() {
+    this.subscribers = [];
+  }
+
+  subscribe(callback) {
+    this.subscribers.push(callback);
+  }
+
+  notify(data) {
+    this.subscribers.forEach((callback) => callback(data));
+  }
+}
+
 export default function BreathingExerciseScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
