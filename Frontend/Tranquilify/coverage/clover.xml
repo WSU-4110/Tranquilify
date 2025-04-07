@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1744054151379" clover="3.2.0">
+  <project timestamp="1744054151379" name="All files">
+    <metrics statements="15" coveredstatements="11" conditionals="4" coveredconditionals="4" methods="6" coveredmethods="5" elements="25" coveredelements="20" complexity="0" loc="15" ncloc="15" packages="1" files="1" classes="1"/>
+    <file name="User.js" path="/Users/ayo/Documents/school/Winter 2025/SE/Lab/Project/code/old/Frontend/Tranquilify/models/User.js">
+      <metrics statements="15" coveredstatements="11" conditionals="4" coveredconditionals="4" methods="6" coveredmethods="5"/>
+      <line num="11" count="8" type="stmt"/>
+      <line num="12" count="8" type="stmt"/>
+      <line num="13" count="8" type="stmt"/>
+      <line num="14" count="8" type="stmt"/>
+      <line num="22" count="6" type="stmt"/>
+      <line num="30" count="1" type="stmt"/>
+      <line num="38" count="1" type="stmt"/>
+      <line num="46" count="0" type="stmt"/>
+      <line num="47" count="0" type="stmt"/>
+      <line num="48" count="0" type="stmt"/>
+      <line num="49" count="0" type="stmt"/>
+      <line num="58" count="6" type="stmt"/>
+      <line num="60" count="6" type="cond" truecount="2" falsecount="0"/>
+      <line num="61" count="4" type="stmt"/>
+      <line num="64" count="2" type="stmt"/>
+    </file>
+  </project>
+</coverage>
