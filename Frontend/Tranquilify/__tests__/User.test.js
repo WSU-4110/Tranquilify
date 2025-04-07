@@ -1,4 +1,5 @@
 import User from '../models/User';
+// Test suite for the User class
 
 describe('User Model', () => {
   // Test 1: Testing object creation with default values
