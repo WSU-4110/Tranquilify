@@ -1,9 +1,9 @@
 import axios from 'axios';
-//import { API_URL_ } from '@env'; // will handle this issue later
+// import { API_URL_ } from '@env'; // will handle this issue later
 
-const API_URL = `${API_URL_}/login`;
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-const USER_URL = `${API_URL_}/user`;
+const USER_URL = `${process.env.EXPO_PUBLIC_API_URL}/user`;
 
 console.log(API_URL);
 
