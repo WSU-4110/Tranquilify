@@ -54,7 +54,7 @@ public class ZoomController {
 
         Long userId = (Long) authentication.getPrincipal();
 
-        return userService.findUserById(userId)
+        return Mono.justOrEmpty(userService.findUserById(userId))
 
                 .flatMap(user -> {
 
@@ -74,7 +74,10 @@ public class ZoomController {
 
                                     ZoomException zoomException = (ZoomException) throwable;
 
-                                    return Mono.just(ResponseEntity<ZoomEntity>(zoomException)); // this will not work the class casting error
+                                    // return Mono.just(ResponseEntity<ZoomEntity>(zoomException)); // this will not work the class casting error
+                                    return Mono.just(ResponseEntity
+                                        .status(HttpStatus.BAD_REQUEST)
+                                        .body((ZoomEntity)null));
                                 }
 
                                 return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null));
