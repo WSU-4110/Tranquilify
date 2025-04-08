@@ -2,7 +2,7 @@ import axios from "axios"
 import moment from "moment"
 //import { API_URL_ } from '@env'; // will handle this issue later
 
-const API_URL = `${API_URL_}/mood`;
+const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/mood`;
 
 export const dateFormatter = (date) => {
     
