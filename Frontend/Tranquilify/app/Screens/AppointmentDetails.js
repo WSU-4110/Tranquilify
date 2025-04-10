@@ -62,13 +62,13 @@ export default function AppointmentDetails({ route }) {
           style={[styles.actionButton, styles.leftButton]}
           onPress={handleCancelAppointment}
         >
-          <Text style={styles.actionText}>Cancel Appointment</Text>
+          <Text style={styles.actionText}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.actionButton, styles.rightButton]}
           onPress={handleRescheduleAppointment}
         >
-          <Text style={styles.actionText}>Reschedule Appointment</Text>
+          <Text style={styles.actionText}>Reschedule</Text>
         </TouchableOpacity>
       </View>
     </View>

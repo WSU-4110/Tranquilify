@@ -49,14 +49,6 @@ export default function AppointmentScheduler() {
 
   return (
     <View style={CommonStyles.container}>
-      <TouchableOpacity 
-        style={styles.backButtonContainer}
-        onPress={handleBackToHome}
-      >
-        <Ionicons name="home" size={24} color={theme.primary} />
-        <Text style={styles.backButtonText}>Back to Home</Text>
-      </TouchableOpacity>
-
       <Calendar
         onDayPress={(day) => setSelectedDate(day.dateString)}
         markedDates={{
@@ -111,7 +103,7 @@ const styles = StyleSheet.create({
     color: theme.text,
   },
   slot: {
-    padding: theme.spacing.md,
+    padding: theme.spacing.xs,
     backgroundColor: theme.backgroundLight,
     marginVertical: theme.spacing.sm,
     borderRadius: 8,
@@ -128,6 +120,5 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   slotList: {
-    paddingBottom: theme.spacing.lg,
   }
 });

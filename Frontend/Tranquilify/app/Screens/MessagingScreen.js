@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import { AuthContext } from '../Services/AuthContext';
+import { Ionicons } from '@expo/vector-icons';
 import { 
   getUserChats, 
   getChatMessages, 
@@ -143,9 +144,6 @@ const MessagingScreen = () => {
           </Text>
         </TouchableOpacity>
         <Text style={styles.header}>Chat ({firstName})</Text>
-        <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Main content area */}
@@ -194,12 +192,23 @@ const MessagingScreen = () => {
                 keyboardVerticalOffset={90}
               >
                 <TextInput
-                  style={styles.input}
+                  style={styles.messageInput}
                   placeholder="Type your message..."
                   value={newMessage}
                   onChangeText={setNewMessage}
+                  multiline={true}
                 />
-                <Button title="Send" onPress={handleSendMessage} />
+                <TouchableOpacity 
+                  style={styles.sendButton} 
+                  onPress={handleSendMessage}
+                  disabled={!newMessage.trim()}
+                >
+                  <Ionicons 
+                    name="arrow-up" 
+                    size={24} 
+                    color={newMessage.trim() ? "#fff" : "#cccccc"} 
+                  />
+                </TouchableOpacity>
               </KeyboardAvoidingView>
             </>
           ) : (

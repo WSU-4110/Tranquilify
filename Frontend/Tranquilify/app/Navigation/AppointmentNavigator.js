@@ -1,26 +1,31 @@
-import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useContext } from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Make sure you have expo vector icons installed
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import AppointmentScheduler from '../Screens/AppointmentScheduler';
 import AppointmentDetails from '../Screens/AppointmentDetails';
+import { AuthContext } from '../Services/AuthContext'; // Import AuthContext
 import theme from '../Styles/theme';
 
 const AppointmentStack = createNativeStackNavigator();
 
 export default function AppointmentNavigator() {
+  const { signOut } = useContext(AuthContext); // Access the signOut function
+  
+  // Sign out button component for the header
+  const SignOutButton = () => (
+    <TouchableOpacity
+      style={styles.signOutButton}
+      onPress={signOut}
+    >
+      <Ionicons name="log-out-outline" size={24} color={theme.primary} />
+    </TouchableOpacity>
+  );
+
   return (
     <AppointmentStack.Navigator
       screenOptions={({ navigation }) => ({
-        headerLeft: () => (
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color={theme.primary} />
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
-        ),
+        headerRight: () => <SignOutButton />, // Add sign out button to header
         headerTitleStyle: {
           color: theme.text,
           fontSize: theme.fontSize.lg,
@@ -28,6 +33,11 @@ export default function AppointmentNavigator() {
         },
         headerStyle: {
           backgroundColor: theme.white,
+          elevation: 2,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
         }
       })}
     >
@@ -39,7 +49,18 @@ export default function AppointmentNavigator() {
       <AppointmentStack.Screen
         name="AppointmentDetails"
         component={AppointmentDetails}
-        options={{ title: 'Appointment Details' }}
+        options={({ navigation }) => ({ 
+          title: 'Appointment Details',
+          headerLeft: () => (
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={24} color={theme.primary} />
+              <Text style={styles.backText}>Back</Text>
+            </TouchableOpacity>
+          ),
+        })}
       />
     </AppointmentStack.Navigator>
   );
@@ -55,5 +76,8 @@ const styles = StyleSheet.create({
     color: theme.primary,
     fontSize: theme.fontSize.md,
     marginLeft: 4,
+  },
+  signOutButton: {
+    padding: 8,
   }
 });

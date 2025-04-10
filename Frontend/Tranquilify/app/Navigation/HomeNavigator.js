@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons'; // Make sure you have expo vector icons installed
+import { Ionicons } from '@expo/vector-icons';
 import MoodTrackerScreen from '../Screens/MoodTrackerScreen.js';
 import BreathingExerciseScreen from '../Screens/BreathingExerciseScreen.js';
 import JournalScreen from '../Screens/JournalScreen.js';
 import MessagingScreen from '../Screens/MessagingScreen.js';
-import AppointmentNavigator from './AppointmentNavigator'; // Import the AppointmentNavigator
+import AppointmentNavigator from './AppointmentNavigator';
+import { AuthContext } from '../Services/AuthContext';
 import theme from '../Styles/theme';
 
 const HomeTab = createBottomTabNavigator();
 
 export default function HomeNavigator(props) {
+  const { signOut } = useContext(AuthContext);
+  
+  // Sign out button component for the header
+  const SignOutButton = () => (
+    <TouchableOpacity
+      style={styles.signOutButton}
+      onPress={signOut}
+    >
+      <Ionicons name="log-out-outline" size={24} color={theme.primary} />
+    </TouchableOpacity>
+  );
+
   return (
     <HomeTab.Navigator
       screenOptions={({ route }) => ({
@@ -40,7 +54,14 @@ export default function HomeNavigator(props) {
         },
         headerStyle: {
           backgroundColor: theme.white,
-        }
+          elevation: 2,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+        },
+        headerRight: () => <SignOutButton />, // Add sign out button to all screens in the tab navigator
+        headerLeft: () => null, // Remove back button
       })}
     >
       <HomeTab.Screen
@@ -67,10 +88,17 @@ export default function HomeNavigator(props) {
         name="Appointments"
         component={AppointmentNavigator}
         options={{ 
-          title: 'Appointments',
+          title: 'Schedule',
           headerShown: false // Hide the header since AppointmentNavigator has its own header
         }}
       />
     </HomeTab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  signOutButton: {
+    marginRight: 16,
+    padding: 8,
+  }
+});
