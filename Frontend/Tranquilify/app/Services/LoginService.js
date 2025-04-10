@@ -63,12 +63,14 @@ export const SignUp = async (email, password, firstName, lastName) => {
 
     try {
     
+        console.log('signing up with: ', API_URL);
         const response = await axios.post(`${API_URL}/sign_up`, { email, password, firstName, lastName });
     
         return response.data;
     
     } catch (error) {
     
+        console.log(error);
         return `Error: Signup Failed,  ${error.response.data || 'Something went wrong. Please try again.'}`;
     }
 };
