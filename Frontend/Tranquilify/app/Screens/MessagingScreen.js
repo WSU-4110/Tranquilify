@@ -16,7 +16,12 @@ import {
   getUserChats, 
   getChatMessages, 
   startChatWithTherapist, 
-  sendChatMessage 
+  sendChatMessage,
+  getUsernameById,
+  startChatWithAITherapist,
+  sendMessageToAITherapist,
+  AI_THERAPIST_USERNAME,
+  AI_THERAPIST_ID,
 } from '../Services/MessagingService';
 import { styles } from '../Styles/MessagingStyles';
 
@@ -50,16 +55,39 @@ const MessagingScreen = () => {
   const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
+  const [chatUsers, setChatUsers] = useState({});
+  const [usernames, setUsernames] = useState({});
+  const [isProcessingAIMessage, setIsProcessingAIMessage] = useState(false);
   // Toggle for showing/hiding the sidebar (chat selector)
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   // Fetch chats that involve the current user
   useEffect(() => {
-    const unsubscribe = getUserChats(user.uid, (userChats) => {
+    const unsubscribe = getUserChats(user.uid, async (userChats) => {
       setChatList(userChats);
+      
+      // Fetch usernames for each participant
+      const usernamesData = {...usernames};
+      
+      for (let chat of userChats) {
+        const otherUserId = Object.keys(chat.participants).find(
+          (uid) => uid !== user.uid
+        );
+        
+        if (otherUserId && !usernames[otherUserId]) {
+          const result = await getUsernameById(otherUserId);
+          if (result.success) {
+            usernamesData[otherUserId] = result.username;
+          }
+        }
+      }
+      
+      setUsernames(usernamesData);
     });
+    
     return () => unsubscribe();
   }, [user]);
+
 
   // Listen for messages in the selected chat
   useEffect(() => {
@@ -90,26 +118,56 @@ const MessagingScreen = () => {
   };
 
   // Function to send a message in the selected chat
-  const handleSendMessage = () => {
-    if (sendChatMessage(selectedChat.id, user.uid, newMessage)) {
-      setNewMessage('');
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !selectedChat) return;
+    
+    if (selectedChat.isAIChat) {
+      setIsProcessingAIMessage(true);
+      if (await sendMessageToAITherapist(selectedChat.id, user.uid, newMessage)) {
+        setNewMessage('');
+      }
+      setIsProcessingAIMessage(false);
+    } else {
+      if (sendChatMessage(selectedChat.id, user.uid, newMessage)) {
+        setNewMessage('');
+      }
     }
   };
 
   // Render each chat item in the sidebar
   const renderChatItem = ({ item }) => {
+    // If it's an AI chat, use the AI username
+    if (item.isAIChat) {
+      return (
+        <TouchableOpacity
+          style={styles.chatItem}
+          onPress={() => {
+            setSelectedChat(item);
+            setIsSidebarVisible(false);
+          }}
+        >
+          <Text style={styles.chatText}>Chat with {AI_THERAPIST_USERNAME}</Text>
+        </TouchableOpacity>
+      );
+    }
+    
+    // Otherwise, handle regular chats
     const targetUserId = Object.keys(item.participants).find(
       (uid) => uid !== user.uid
     );
+    
+    // Get username or use ID as fallback
+    const username = usernames[targetUserId] || targetUserId;
+    
     return (
       <TouchableOpacity
         style={styles.chatItem}
         onPress={() => {
-          setSelectedChat(item);
+          setSelectedChat({...item, otherUserId: targetUserId});
           setIsSidebarVisible(false);
         }}
       >
-        <Text style={styles.chatText}>Chat with {targetUserId}</Text>
+        <Text style={styles.chatText}>Chat with {username}</Text>
       </TouchableOpacity>
     );
   };
@@ -131,6 +189,19 @@ const MessagingScreen = () => {
     );
   };
 
+  const handleStartAIChat = async () => {
+    setError(null);
+    
+    const result = await startChatWithAITherapist(user.uid);
+    
+    if (result.success) {
+      setSelectedChat(result.chat);
+      setIsSidebarVisible(false);
+    } else {
+      setError(result.error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Header with sidebar toggle arrow and Sign Out */}
@@ -143,40 +214,58 @@ const MessagingScreen = () => {
             {isSidebarVisible ? '<' : '>'}
           </Text>
         </TouchableOpacity>
-        <Text style={styles.header}>Chat ({firstName})</Text>
+        <Text style={styles.header}>Chat</Text>
       </View>
 
       {/* Main content area */}
       <View style={styles.content}>
         {/* Sidebar for chat selection and new chat creation */}
         {isSidebarVisible && (
-          <View style={styles.sidebar}>
-            <Text style={styles.sidebarHeader}>Chats</Text>
-            <FlatList
-              data={chatList}
-              keyExtractor={(item) => item.id}
-              renderItem={renderChatItem}
-              ListEmptyComponent={
-                <Text style={styles.emptyText}>No chats yet.</Text>
-              }
+        <View style={styles.sidebar}>
+          <Text style={styles.sidebarHeader}>Chats</Text>
+          <FlatList
+            data={chatList}
+            keyExtractor={(item) => item.id}
+            renderItem={renderChatItem}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No chats yet.</Text>
+            }
+          />
+          
+          {/* AI Therapist button */}
+          <TouchableOpacity
+            style={styles.aiTherapistButton}
+            onPress={handleStartAIChat}
+          >
+            <Text style={styles.aiTherapistButtonText}>Chat with AI Therapist</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.newChatContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter therapist username..."
+              value={newChatUser}
+              onChangeText={setNewChatUser}
+              autoCapitalize="none"
             />
-            <View style={styles.newChatContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter therapist username..."
-                value={newChatUser}
-                onChangeText={setNewChatUser}
-              />
-              <Button title="Start Chat" onPress={handleStartChat} />
-            </View>
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            <Button title="Start Chat" onPress={handleStartChat} />
           </View>
-        )}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+        </View>
+      )}
 
         {/* Chat conversation area */}
         <View style={styles.chatContainer}>
           {selectedChat ? (
             <>
+            <View style={styles.chatHeader}>
+              <Text style={styles.chatHeaderText}>
+                {selectedChat.isAIChat 
+                  ? AI_THERAPIST_USERNAME 
+                  : (usernames[selectedChat.otherUserId] || selectedChat.otherUserId)
+                }
+              </Text>
+            </View>
               <FlatList
                 data={messages}
                 keyExtractor={(item) => item.id}
@@ -191,22 +280,26 @@ const MessagingScreen = () => {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 keyboardVerticalOffset={90}
               >
+                {isProcessingAIMessage && (
+                  <Text style={styles.aiProcessingText}>AI is thinking...</Text>
+                )}
                 <TextInput
                   style={styles.messageInput}
                   placeholder="Type your message..."
                   value={newMessage}
                   onChangeText={setNewMessage}
                   multiline={true}
+                  autoCapitalize="none"
                 />
                 <TouchableOpacity 
                   style={styles.sendButton} 
                   onPress={handleSendMessage}
-                  disabled={!newMessage.trim()}
+                  disabled={!newMessage.trim() || isProcessingAIMessage}
                 >
                   <Ionicons 
                     name="arrow-up" 
                     size={24} 
-                    color={newMessage.trim() ? "#fff" : "#cccccc"} 
+                    color={(newMessage.trim() && !isProcessingAIMessage) ? "#fff" : "#cccccc"} 
                   />
                 </TouchableOpacity>
               </KeyboardAvoidingView>
