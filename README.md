@@ -8,14 +8,12 @@ Tranquilify is a comprehensive mental health application designed to provide use
 - **Spring Boot**: Java-based framework used to create a stand-alone, production-grade Spring-based application
 - **PostgreSQL**: Advanced open-source relational database for data persistence
 - **Spring Security**: Authentication and access control framework
-- **JPA/Hibernate**: ORM (Object Relational Mapping) for database interaction
 - **RESTful API**: For communication between frontend and backend
 
 ### Frontend
 - **React Native**: Cross-platform mobile application framework
 - **Expo**: Platform for making universal native apps for Android, iOS, and the web
 - **React Navigation**: Routing and navigation for React Native apps
-- **React Native Paper**: Material Design implementation for React Native
 
 ### Real-time Communication
 - **Firebase Realtime Database**: NoSQL cloud database for real-time data synchronization
@@ -38,15 +36,12 @@ The mood tracking feature allows users to:
 Interactive breathing exercises designed to:
 - Help users manage stress and anxiety
 - Provide guided breathing sessions of varying lengths
-- Offer different breathing techniques (box breathing, 4-7-8 technique, etc.)
 - Track progress and consistency
 
 ### Journal
 The journaling feature enables users to:
 - Create and save personal journal entries
 - Add timestamps to entries
-- Search through past entries
-- Use prompts for guided journaling sessions
 
 ### Messaging
 Real-time messaging capabilities include:
@@ -59,7 +54,6 @@ Real-time messaging capabilities include:
 The scheduling system allows users to:
 - Book appointments with therapists
 - Receive Zoom meeting links for virtual sessions
-- Get reminders for upcoming appointments
 - Reschedule or cancel appointments
 
 ## Getting Started
