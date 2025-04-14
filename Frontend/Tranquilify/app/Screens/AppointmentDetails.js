@@ -30,14 +30,6 @@ export default function AppointmentDetails({ route }) {
   
   return (
     <View style={CommonStyles.container}>
-      <TouchableOpacity 
-        style={styles.backButtonContainer}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={24} color={theme.primary} />
-        <Text style={styles.backButtonText}>Back to Schedule</Text>
-      </TouchableOpacity>
-      
       <View style={styles.card}>
         <Text style={styles.title}>Appointment Details</Text>
         <Text style={styles.detail}>

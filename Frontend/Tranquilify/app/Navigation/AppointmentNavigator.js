@@ -49,17 +49,8 @@ export default function AppointmentNavigator() {
       <AppointmentStack.Screen
         name="AppointmentDetails"
         component={AppointmentDetails}
-        options={({ navigation }) => ({ 
+        options={() => ({ 
           title: 'Appointment Details',
-          headerLeft: () => (
-            <TouchableOpacity 
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="arrow-back" size={24} color={theme.primary} />
-              <Text style={styles.backText}>Back</Text>
-            </TouchableOpacity>
-          ),
         })}
       />
     </AppointmentStack.Navigator>
