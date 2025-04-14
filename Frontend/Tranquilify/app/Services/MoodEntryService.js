@@ -18,6 +18,17 @@ const sortData = (moodData) => {
     return sortedData;
 }
 
+
+export const checkTodaysMoodEntry = (entries) => {
+    if (!entries || entries.length === 0) return false;
+    
+    const today = moment().format('YYYY-MM-DD');
+    return entries.some(entry => {
+        const entryDate = moment(entry.date).format('YYYY-MM-DD');
+        return entryDate === today;
+    });
+};
+
 export const getMoodEntries = async(userToken) => {
 
     try{

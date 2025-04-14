@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { addMoodEntry, getMoodEntries } from '../Services/MoodEntryService';
+import { addMoodEntry, getMoodEntries, checkTodaysMoodEntry } from '../Services/MoodEntryService';
 import styles from '../Styles/MoodTracker';
 import { AuthContext } from '../Services/AuthContext';
 
 export default function MoodTrackerScreen() {
   // Store mood entries as objects with a date and a numeric mood value
   const [moodData, setMoodData] = useState([]);
+  const [hasLoggedToday, setHasLoggedToday] = useState(false);
   
   const {userToken} = useContext(AuthContext);
 
@@ -37,7 +38,10 @@ export default function MoodTrackerScreen() {
 
         if( typeof response === 'string' && response.startsWith('Error') ) Alert.alert(response);
 
-        else setMoodData(response);
+        else{
+          setMoodData(response);
+          setHasLoggedToday(checkTodaysMoodEntry(response));
+        }
       }
       catch(error){};
   }
@@ -51,7 +55,11 @@ export default function MoodTrackerScreen() {
 
         if (response.startsWith('Error')) Alert.alert(response);
                    
-        else setLoading(!loading);
+        else {
+          setHasLoggedToday(true);
+          setLoading(!loading);
+        }
+
       }
       
       catch(error){};
@@ -72,11 +80,48 @@ export default function MoodTrackerScreen() {
   
   const latestMoodEmoji =  latestMoodEntry && moodEmojis.find((item) => item.value === latestMoodEntry.value)?.emoji;
 
+  const notificationStyles = {
+    notificationBanner: {
+      backgroundColor: '#FFF',
+      padding: 16,
+      borderRadius: 8,
+      marginBottom: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: '#fb8c00',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    notificationText: {
+      fontSize: 16,
+      color: '#333',
+      textAlign: 'center',
+      fontWeight: '500',
+    },
+    notificationEmoji: {
+      fontSize: 24,
+      marginRight: 8,
+    }
+  };
+
   return (
 
     <View style={styles.container}>
     
       <Text style={styles.title}>Mood Tracker</Text>
+      {!hasLoggedToday && (
+        <View style={notificationStyles.notificationBanner}>
+          <Text style={notificationStyles.notificationEmoji}>📝</Text>
+          <Text style={notificationStyles.notificationText}>
+            Don't forget to log your mood for today!
+          </Text>
+        </View>
+      )}
     
       <Text style={styles.subtitle}>Select your mood for today:</Text>
       
