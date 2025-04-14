@@ -96,7 +96,7 @@ npm install
 - Add your Firebase configuration to the project
 - Set up Realtime Database rules
 
-### Start the Expo development server:
+#### Start the Expo development server:
 
 ```
 npx expo start
