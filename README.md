@@ -91,11 +91,12 @@ The scheduling system allows users to:
 npm install
 ```
 
-### Configure Firebase:
+#### Configure Firebase:
 - Create a Firebase project
 - Add your Firebase configuration to the project
 - Set up Realtime Database rules
-4. Start the Expo development server:
+
+### Start the Expo development server:
 
 ```
 npx expo start
