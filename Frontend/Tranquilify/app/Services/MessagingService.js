@@ -100,6 +100,39 @@ export const startChatWithTherapist = async (currentUserId, therapistUsername) =
   }
 };
 
+export const getUserData = async (userId) => {
+  try {
+    const userRef = ref(database, `users/${userId}`);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      return { success: true, userData: snapshot.val() };
+    } else {
+      return { success: false, error: 'User not found' };
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return { success: false, error: 'Error fetching user data' };
+  }
+};
+
+export const getUsernameById = async (userId) => {
+  try {
+    const userRef = ref(database, `users/${userId}`);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      return { success: true, username: userData.username || userId };
+    } else {
+      return { success: false, error: 'User not found' };
+    }
+  } catch (error) {
+    console.error('Error fetching username:', error);
+    return { success: false, error: 'Error fetching username' };
+  }
+};
+
 // Send a message in a chat
 export const sendChatMessage = (chatId, userId, messageText) => {
   if (!messageText.trim() || !chatId) return false;
@@ -113,4 +146,85 @@ export const sendChatMessage = (chatId, userId, messageText) => {
   
   push(messagesRef, messageData);
   return true;
+};
+
+
+// AI Therapist Constants
+export const AI_THERAPIST_ID = 'ai-therapist';
+export const AI_THERAPIST_USERNAME = 'AI Therapist';
+// Use the environment variable for the API URL
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8080'; 
+const AI_ENDPOINT = `${API_BASE_URL}/suggestion`;
+
+// Start or get chat with AI Therapist
+export const startChatWithAITherapist = async (userId) => {
+  try {
+    // Create a chat ID using user ID and AI therapist ID
+    const chatId = [userId, AI_THERAPIST_ID].sort().join('_');
+    const chatRef = ref(database, `chats/${chatId}`);
+    
+    // Check if chat already exists
+    const chatSnapshot = await get(chatRef);
+    if (!chatSnapshot.exists()) {
+      // Create a new chat if it doesn't exist
+      await set(chatRef, {
+        participants: {
+          [userId]: true,
+          [AI_THERAPIST_ID]: true,
+        },
+        messages: {},
+        isAIChat: true
+      });
+    }
+    
+    return { 
+      success: true, 
+      chat: {
+        id: chatId,
+        participants: { [userId]: true, [AI_THERAPIST_ID]: true },
+        isAIChat: true
+      }
+    };
+  } catch (error) {
+    console.error('Error starting AI chat:', error);
+    return { success: false, error: 'An error occurred while starting the AI chat.' };
+  }
+};
+
+// Send message to AI Therapist and get response
+export const sendMessageToAITherapist = async (chatId, userId, messageText) => {
+  if (!messageText.trim() || !chatId) return false;
+  
+  try {
+    // Save user message
+    const messagesRef = ref(database, `chats/${chatId}/messages`);
+    const userMessageData = {
+      sender: userId,
+      text: messageText.trim(),
+      timestamp: Date.now(),
+    };
+    
+    // Push user message
+    const newMessageRef = push(messagesRef, userMessageData);
+    
+    // Get AI response
+    const response = await fetch(`${AI_ENDPOINT}?query=${encodeURIComponent(messageText)}`);
+    const aiResponse = await response.text();
+    
+    // Save AI response
+    const aiMessageData = {
+      sender: AI_THERAPIST_ID,
+      text: aiResponse,
+      timestamp: Date.now() + 1, // +1 to ensure it appears after user message
+    };
+    
+    // Push AI response
+    push(messagesRef, aiMessageData);
+    
+    return true;
+  } catch (error) {
+    console.error('Error sending message to AI:', error);
+    // Still return true because the user message was sent
+    return true;
+  }
 };

@@ -159,4 +159,32 @@ export const styles = StyleSheet.create({
     color: '#666',
     marginVertical: 20,
   },
+  chatHeader: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#f0f0f0',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  chatHeaderText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  aiProcessingText: {
+    fontStyle: 'italic',
+    color: '#888',
+    padding: 5,
+  },
+  aiTherapistButton: {
+    backgroundColor: '#4a90e2',
+    padding: 12,
+    borderRadius: 5,
+    marginVertical: 10,
+    marginHorizontal: 10,
+  },
+  aiTherapistButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
