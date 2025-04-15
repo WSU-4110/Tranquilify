@@ -43,6 +43,7 @@ export default function MoodTrackerScreen() {
 
         else{
           setMoodData(response);
+
           setHasLoggedToday(checkTodaysMoodEntry(response));
         }
       }
@@ -76,7 +77,7 @@ export default function MoodTrackerScreen() {
 
         if (response.startsWith('Error')) Alert.alert(response);
 
-        else setMessage(response.data);
+        else setMessage(response);
       }
       catch(error){};
   };
@@ -84,11 +85,13 @@ export default function MoodTrackerScreen() {
   useEffect(() => {
   
        handleGetMoodEntry();
+
+       handleMessage();
   
     }, [loading]);
 
 
-  const labels = moodData.map((entry) => entry.date.slice(5)); 
+  const labels = moodData.map((entry) => entry.date); 
 
   const dataPoints = moodData.map((entry) => entry.value);
 
@@ -221,7 +224,7 @@ export default function MoodTrackerScreen() {
 
       )}
 
-      <Text> {message} </Text>
+      <Text style={notificationStyles.notificationText}> {message} </Text>
 
     </View>
   );
