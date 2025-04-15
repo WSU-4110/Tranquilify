@@ -25,6 +25,14 @@ export const getUserChats = (userId, callback) => {
   });
 };
 
+
+export const createUser = (userId) => {
+  const userRef = ref(database, 'users');
+  set(userRef,  {
+    userId: {'role': 'client', 'username': 'default'}
+  });
+}
+
 // Get all messages for a specific chat
 export const getChatMessages = (chatId, callback) => {
   if (!chatId) return null;
