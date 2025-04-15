@@ -56,35 +56,42 @@ public class ZoomController {
 
         return Mono.justOrEmpty(userService.findUserById(userId))
 
-                .flatMap(user -> {
+                .flatMap(user ->
+                        {
 
-                    return zoomApiService.createMeeting(request)
+                            try {
 
-                            .map(zoomEntity -> {
+                                return zoomApiService.createMeeting(request)
 
-                                return ResponseEntity
-                                        .status(HttpStatus.CREATED)
+                                        .map(zoomEntity -> ResponseEntity
 
-                                        .body(zoomEntity);
-                            })
+                                                .status(HttpStatus.CREATED)
 
-                            .onErrorResume(throwable -> {
+                                                .body(zoomEntity))
 
-                                if (throwable instanceof ZoomException) {
+                                        .onErrorResume(throwable -> {
 
-                                    ZoomException zoomException = (ZoomException) throwable;
+                                            if (throwable instanceof ZoomException) {
 
-                                    // return Mono.just(ResponseEntity<ZoomEntity>(zoomException)); // this will not work the class casting error
-                                    return Mono.just(ResponseEntity
-                                        .status(HttpStatus.BAD_REQUEST)
-                                        .body((ZoomEntity)null));
-                                }
+                                                return Mono.just(ResponseEntity
 
-                                return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null));
-                            });
-                })
+                                                        .status(HttpStatus.BAD_REQUEST)
 
+                                                        .body(null));
+                                            }
+                                            return Mono.just(ResponseEntity
+
+                                                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+
+                                                    .body(null));
+                                        });
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                )
                 .defaultIfEmpty(ResponseEntity.badRequest().build());
+
     }
 
 }

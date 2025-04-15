@@ -1,6 +1,5 @@
 import React, { createContext, useState } from 'react';
 
-
 export const AuthContext = createContext({
   userToken: '',
   firstName : '',
@@ -33,11 +32,11 @@ export function AuthProvider({ children }) {
 
   // You can also implement signOut to clear the token
   const signOut = () => {
-    setUserToken(null);
+    setUserToken('');
   };
 
   return (
-    <AuthContext.Provider value={{ userToken, signIn, signOut, user }}>
+    <AuthContext.Provider value={{ userToken, firstName, lastName, signIn, signOut, user }}>
       {children}
     </AuthContext.Provider>
   );

@@ -19,10 +19,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Optional: Initialize Analytics (only works on web)
-const analytics = getAnalytics(app);
+//const analytics = getAnalytics(app);
 
 // Initialize other services as needed
 const database = getDatabase(app);
 const auth = getAuth(app);
 
-export { app, analytics, database, auth };
+export { app, database, auth };

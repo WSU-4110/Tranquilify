@@ -1,9 +1,8 @@
 import axios from 'axios';
-//import { API_URL_ } from '@env'; // will handle this issue later
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const API_URL =  `http://172.20.20.20:9191/api/login`;
 
-const USER_URL = `${process.env.EXPO_PUBLIC_API_URL}/user`;
+const USER_URL = `http://172.20.20.20:9191/api/users`;
 
 console.log(API_URL);
 
