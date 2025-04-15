@@ -34,8 +34,8 @@ const MessagingScreen = () => {
   // Use authenticated user with token if available, otherwise use dummy user
   // In Firebase, we'll use the userToken as the uid for database operations
   // const user = authContext?.userToken ? { uid: authContext.userToken } : dummyUser;
-  const user = {uid: authContext.userToken };
-  createUser(user.uid);
+  const user = dummyUser;
+  // createUser(user.uid);
 
   
   // Get first name from context if available

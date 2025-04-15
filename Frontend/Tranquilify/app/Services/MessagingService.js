@@ -27,9 +27,11 @@ export const getUserChats = (userId, callback) => {
 
 
 export const createUser = (userId) => {
-  const userRef = ref(database, 'users');
-  set(userRef,  {
-    userId: {'role': 'client', 'username': 'default'}
+  // const userRef = ref(database, 'users2/');
+  // const userRef = ref(database, `users2/${userId}`);
+  const userRef = ref(database, `users2/${userId}`);
+  set(userRef, {
+    'role': 'client', 'username': 'default'
   });
 }
 
