@@ -221,38 +221,41 @@ const MessagingScreen = () => {
       <View style={styles.content}>
         {/* Sidebar for chat selection and new chat creation */}
         {isSidebarVisible && (
-        <View style={styles.sidebar}>
-          <Text style={styles.sidebarHeader}>Chats</Text>
-          <FlatList
-            data={chatList}
-            keyExtractor={(item) => item.id}
-            renderItem={renderChatItem}
-            ListEmptyComponent={
-              <Text style={styles.emptyText}>No chats yet.</Text>
-            }
-          />
-          
-          {/* AI Therapist button */}
-          <TouchableOpacity
-            style={styles.aiTherapistButton}
-            onPress={handleStartAIChat}
+          <KeyboardAvoidingView 
+            style={styles.sidebar}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 130 : 0}
           >
-            <Text style={styles.aiTherapistButtonText}>Chat with AI Therapist</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.newChatContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter therapist username..."
-              value={newChatUser}
-              onChangeText={setNewChatUser}
-              autoCapitalize="none"
+            <Text style={styles.sidebarHeader}>Chats</Text>
+            <FlatList
+              data={chatList}
+              keyExtractor={(item) => item.id}
+              renderItem={renderChatItem}
+              ListEmptyComponent={
+                <Text style={styles.emptyText}>No chats yet.</Text>
+              }
             />
-            <Button title="Start Chat" onPress={handleStartChat} />
-          </View>
-          {error && <Text style={styles.errorText}>{error}</Text>}
-        </View>
-      )}
+            
+            <TouchableOpacity
+              style={styles.aiTherapistButton}
+              onPress={handleStartAIChat}
+            >
+              <Text style={styles.aiTherapistButtonText}>Chat with AI Therapist</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.newChatContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter therapist username..."
+                value={newChatUser}
+                onChangeText={setNewChatUser}
+                autoCapitalize="none"
+              />
+              <Button title="Start Chat" onPress={handleStartChat} />
+            </View>
+            {error && <Text style={styles.errorText}>{error}</Text>}
+          </KeyboardAvoidingView>
+        )}
 
         {/* Chat conversation area */}
         <View style={styles.chatContainer}>
@@ -278,7 +281,7 @@ const MessagingScreen = () => {
               <KeyboardAvoidingView
                 style={styles.messageInputContainer}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={90}
+                keyboardVerticalOffset={130}
               >
                 {isProcessingAIMessage && (
                   <Text style={styles.aiProcessingText}>AI is thinking...</Text>
