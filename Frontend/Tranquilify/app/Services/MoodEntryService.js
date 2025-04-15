@@ -1,8 +1,9 @@
 import axios from "axios"
 import moment from "moment"
-//import { API_URL_ } from '@env'; // will handle this issue later
 
-const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/mood`;
+const API_URL =  `http://172.20.10.2:9191/api/mood`;
+
+const ANALYTICS_URL =  `http://172.20.10.2:9191/api/analytics`;
 
 export const dateFormatter = (date) => {
     
@@ -15,7 +16,10 @@ const sortData = (moodData) => {
 
     const sortedData = [...moodData].sort( (a, b) => dateFormatter(a.date) - dateFormatter(b.date) );
 
-    return sortedData;
+    return sortedData.map(item => ({
+        ...item,
+        formattedDate: moment(item.date).format('MMM D'), // e.g., "Apr 15"
+    }));
 }
 
 
@@ -52,6 +56,21 @@ export const addMoodEntry = async (value, userToken) => {
         const response = await axios.post(`${API_URL}/add`, { value },  { headers: { "Authorization": `Bearer ${userToken}` } } );
 
         return `Success : ${response.data}`;
+    }
+    catch(error){
+
+        return `Error, ${error.response?.data?.message || "Failed to save note"}`;
+
+    }
+};
+
+export const moodState = async (userToken) => {
+
+    try{
+
+        const response = await axios.get(`${ANALYTICS_URL}/`, {headers: { "Authorization": `Bearer ${userToken}` } });
+
+        return response.data;
     }
     catch(error){
 

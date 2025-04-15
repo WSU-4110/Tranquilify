@@ -43,12 +43,6 @@ export default function NotesComponent({ note, setLoading }) {
         <Text style={styles.entryText}>{content}</Text>
       
         <View style={styles.actionButtons}>
-
-          <TouchableOpacity style={styles.actionButton}>
-          
-            <Text style={styles.actionText}>Edit</Text>
-          
-          </TouchableOpacity>
           
           <TouchableOpacity onPress={handleDeleteEntry} style={styles.actionButton}>
           

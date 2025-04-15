@@ -1,59 +1,51 @@
-package com.tranquilify.demo.Service;
+package Tranquilify.demo.Service.impl;
 
-import com.tranquilify.demo.Entities.JournalEntryEntity;
-import com.tranquilify.demo.Repository.JournalEntryRepository;
+import Tranquilify.demo.Entities.MoodEntity;
+import Tranquilify.demo.Repository.MoodRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 /*
 
 This fle is voided, please do not use as it doesn't work
  */
 @Service
 public class JournalAnalyticsService {
+    @Autowired
+    private final MoodRepository moodRepository;
 
-    private final JournalEntryRepository journalEntryRepository;
-
-    public JournalAnalyticsService(JournalEntryRepository journalEntryRepository) {
-        this.journalEntryRepository = journalEntryRepository;
+    public JournalAnalyticsService(MoodRepository moodRepository) {
+        this.moodRepository = moodRepository;
     }
 
-    public Map<String, Integer> analyzeUserMood(String userId) {
-        List<JournalEntryEntity> entries = journalEntryRepository.findByUserId(userId);
-        Map<String, Integer> moodCount = new HashMap<>();
+    public String analyzeUserMood(Long userId) {
 
-        List<String> positiveWords = Arrays.asList("happy", "joy", "excited", "grateful");
-        List<String> negativeWords = Arrays.asList("sad", "angry", "depressed", "stressed");
+        List<MoodEntity> values = moodRepository.findByUser_UserId(userId);
 
-        for (JournalEntryEntity entry : entries) {
-            String content = entry.getContent().toLowerCase();
-            for (String word : positiveWords) {
-                if (content.contains(word)) {
-                    moodCount.put("positive", moodCount.getOrDefault("positive", 0) + 1);
-                }
-            }
-            for (String word : negativeWords) {
-                if (content.contains(word)) {
-                    moodCount.put("negative", moodCount.getOrDefault("negative", 0) + 1);
-                }
-            }
-        }
-        return moodCount;
-    }
+        int size = values.size();
 
-    public List<String> getSuggestedResources(String userId) {
-        Map<String, Integer> moodAnalysis = analyzeUserMood(userId);
-        List<String> recommendations = new ArrayList<>();
+        float average = 0;
 
-        if (moodAnalysis.getOrDefault("negative", 0) > moodAnalysis.getOrDefault("positive", 0)) {
-            recommendations.add("Guided Meditation");
-            recommendations.add("Talk to a Therapist");
-        } else {
-            recommendations.add("Gratitude Journaling");
-            recommendations.add("Exercise Routines");
+        //computing rolling average of mood over a week basis
+
+        for (int i = size - 1; i >= Math.max(0, size - 7); i--) {
+
+            average += values.get(i).getValue();
+
         }
 
-        return recommendations;
+        average = average / 10.f;
+
+        if (average >= 0.8)
+
+            return "You are doing great, do some Gratitude journaling";
+
+        else if (average >= 0.6)
+
+            return "You are doing great, do some Guided Meditation, and Exercise";
+
+        else return "hey, we have a great therapist available if you want to talk";
     }
 }

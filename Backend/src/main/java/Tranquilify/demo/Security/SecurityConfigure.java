@@ -22,7 +22,7 @@ public class SecurityConfigure {
 
         http
                 .authorizeHttpRequests()
-                .requestMatchers("/login/*")
+                .requestMatchers("/api/login/**")
                 .permitAll()
                 .anyRequest().authenticated();
 

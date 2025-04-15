@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { addMoodEntry, getMoodEntries, checkTodaysMoodEntry } from '../Services/MoodEntryService';
+import { addMoodEntry, getMoodEntries, checkTodaysMoodEntry, moodState } from '../Services/MoodEntryService';
 import styles from '../Styles/MoodTracker';
 import { AuthContext } from '../Services/AuthContext';
 
 export default function MoodTrackerScreen() {
   // Store mood entries as objects with a date and a numeric mood value
   const [moodData, setMoodData] = useState([]);
+
+  const [message, setMessage] = useState([]);
+
   const [hasLoggedToday, setHasLoggedToday] = useState(false);
   
   const {userToken} = useContext(AuthContext);
@@ -62,6 +65,19 @@ export default function MoodTrackerScreen() {
 
       }
       
+      catch(error){};
+  };
+
+  const handleMessage = async () => {
+
+      try{
+
+        const response = await moodState(userToken);
+
+        if (response.startsWith('Error')) Alert.alert(response);
+
+        else setMessage(response.data);
+      }
       catch(error){};
   };
 
@@ -204,6 +220,8 @@ export default function MoodTrackerScreen() {
         />
 
       )}
+
+      <Text> {message} </Text>
 
     </View>
   );

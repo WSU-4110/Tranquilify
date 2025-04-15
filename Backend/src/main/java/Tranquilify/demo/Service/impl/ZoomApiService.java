@@ -3,6 +3,8 @@ package Tranquilify.demo.Service.impl;
 import Tranquilify.demo.DTO.MeetingRequest;
 import Tranquilify.demo.Entities.ZoomEntity;
 import Tranquilify.demo.Exceptions.ZoomException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ZoomApiService {
+public class ZoomApiService{
 
     private final WebClient webClient;
 
@@ -25,7 +27,7 @@ public class ZoomApiService {
                 .defaultHeader("Authorization", "Bearer " + zoomApiToken).build();
     }
 
-    public Mono<ZoomEntity> createMeeting(MeetingRequest meetingRequest) {
+    public Mono<ZoomEntity> createMeeting(MeetingRequest meetingRequest) throws Exception{
 
         String jsonRequestBody = "{"
                 + "\"topic\": \"" + meetingRequest.getTopic() + "\","
@@ -68,20 +70,33 @@ public class ZoomApiService {
 
                 .map(response -> {
 
+                    ObjectMapper mapper = new ObjectMapper();
+
                     ZoomEntity zoomEntity = new ZoomEntity();
 
-                    zoomEntity.setTopic(meetingRequest.getTopic());
+                    try {
+                        JsonNode jsonNode = mapper.readTree(response);
 
-                    zoomEntity.setDuration((meetingRequest.getDuration()));
+                        long meetingId = jsonNode.get("id").asLong();
 
-                    zoomEntity.setPassword(meetingRequest.getPassword());
+                        zoomEntity.setMeetingID(meetingId);
 
-                    zoomEntity.setTimezone(meetingRequest.getTimezone());
+                        zoomEntity.setTopic(meetingRequest.getTopic());
 
-                    zoomEntity.setType(meetingRequest.getType());
+                        zoomEntity.setDuration(meetingRequest.getDuration());
 
-                    zoomEntity.setStartTime(meetingRequest.getStartTime());
+                        zoomEntity.setPassword(meetingRequest.getPassword());
 
+                        zoomEntity.setTimezone(meetingRequest.getTimezone());
+
+                        zoomEntity.setType(meetingRequest.getType());
+
+                        zoomEntity.setStartTime(meetingRequest.getStartTime());
+
+                    } catch (Exception e) {
+
+                        throw new RuntimeException("Failed to parse meetingId from response", e);
+                    }
                     return zoomEntity;
                 });
     }

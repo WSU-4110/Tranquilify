@@ -13,7 +13,7 @@ import theme from '../Styles/theme';
 const HomeTab = createBottomTabNavigator();
 
 export default function HomeNavigator(props) {
-  const { signOut } = useContext(AuthContext);
+  const { signOut, firstName } = useContext(AuthContext);
   
   // Sign out button component for the header
   const SignOutButton = () => (
@@ -67,28 +67,28 @@ export default function HomeNavigator(props) {
       <HomeTab.Screen
         name="MoodTrackerScreen"
         component={MoodTrackerScreen}
-        options={{ title: 'Home' }}
+        options={{ title: `Home || ${firstName}` }}
       />
       <HomeTab.Screen
         name="Breathing"
         component={BreathingExerciseScreen}
-        options={{ title: 'Breathing' }}
+        options={{ title: `Breathing || ${firstName}` }}
       />
       <HomeTab.Screen
         name="Journal"
         component={JournalScreen}
-        options={{ title: 'Journal' }}
+        options={{ title: `Journal || ${firstName}` }}
       />
       <HomeTab.Screen
         name="Messaging"
         component={MessagingScreen}
-        options={{ title: 'Messaging' }}
+        options={{ title: `Messaging || ${firstName}` }}
       />
       <HomeTab.Screen
         name="Appointments"
         component={AppointmentNavigator}
         options={{ 
-          title: 'Schedule',
+          title: `Schedule || ${firstName}`,
           headerShown: false // Hide the header since AppointmentNavigator has its own header
         }}
       />

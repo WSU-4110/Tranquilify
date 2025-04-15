@@ -1,8 +1,7 @@
 import axios from 'axios';
 import moment from 'moment'
-//import { API_URL_ } from '@env'; // will handle this issue later
 
-const API_URL =  `${process.env.EXPO_PUBLIC_API_URL}/notes`;
+const API_URL =  `http://172.20.10.2:9191/api/notes`;
 
 //get journal entries
 export const getEntry = async (userToken) => {
