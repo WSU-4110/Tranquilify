@@ -1,6 +1,6 @@
 // JournalEntry.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, Button, TouchableOpacity, StyleSheet, Alert,} from 'react-native';
+import { View, Text, FlatList, TextInput, Button, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import NotesComponent from '../Components/NotesComponent';
 import { getEntry, addEntry } from '../Services/JournalServices';
 import { AuthContext } from '../Services/AuthContext';
@@ -94,7 +94,11 @@ const JournalEntry = () => {
   // Render each journal entry.
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
 
       <Text style={styles.header}>Journal Entries</Text>
 
@@ -129,7 +133,7 @@ const JournalEntry = () => {
       
       </View>
     
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
