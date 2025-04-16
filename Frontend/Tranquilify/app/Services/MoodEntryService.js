@@ -1,9 +1,9 @@
 import axios from "axios"
 import moment from "moment"
 
-const API_URL =  `http://172.20.20.20:9191/api/mood`;
+const API_URL =  `http://35.16.35.232:9191/api/mood`;
 
-const ANALYTICS_URL =  `http://172.20.20.20:9191/api/analytics`;
+const ANALYTICS_URL =  `http://35.16.35.232:9191/api/analytics`;
 
 export const dateFormatter = (date) => {
     

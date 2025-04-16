@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL =  `http://172.20.20.20:9191/api/login`;
+const API_URL =  `http://35.16.35.232:9191/api/login`;
 
-const USER_URL = `http://172.20.20.20:9191/api/users`;
+const USER_URL = `http://35.16.35.232:9191/api/users`;
 
 console.log(API_URL);
 
