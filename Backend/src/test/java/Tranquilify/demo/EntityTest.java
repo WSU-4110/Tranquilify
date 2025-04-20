@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,67 +16,50 @@ import static org.mockito.Mockito.when;
 public class EntityTest {
 
     @Mock
-    private NoteRepository noteRepository;
-    
-    @Mock
-    private UserRepository userRepository;
-    
-    @Mock
-    private LoginRepository loginRepository;
-    
-    @Mock
-    private ZoomRepository zoomRepository;
-    
-    @Mock
-    private MoodRepository moodRepository;
-    
-    @InjectMocks
     private NoteService noteService;
     
-    @InjectMocks
+    @Mock
     private UserService userService;
     
-    @InjectMocks
+    @Mock
     private LoginService loginService;
     
-    @InjectMocks
+    @Mock
     private PasswordHashService passService;
     
-    @InjectMocks
+    @Mock
     private ZoomService zoomService;
     
-    @InjectMocks
+    @Mock
     private MoodService moodService;
 
     @BeforeEach
     void setUp() {
-        // Set up common test data here
-        
-        // Note entity setup
+        // Set up test data
         NotesEntity noteEntity = new NotesEntity();
-        noteEntity.setId(43L);
+        noteEntity.setNoteId(43L);
         noteEntity.setContent("Note");
-        when(noteRepository.findById(43L)).thenReturn(Optional.of(noteEntity));
+        when(noteService.findNotesById(43L)).thenReturn(Optional.of(noteEntity));
         
         // Login entity setup
         LoginEntity loginEntity = new LoginEntity();
         loginEntity.setEmail("test@gmail.com");
-        when(loginRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(loginEntity));
+        when(loginService.findByEmail("test@gmail.com")).thenReturn(Optional.of(loginEntity));
         
         // User entity setup
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(1L);
-        when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+        when(userService.findUserById(1L)).thenReturn(Optional.of(userEntity));
         
         // Zoom entity setup
         ZoomEntity zoomEntity = new ZoomEntity();
         zoomEntity.setMeetingID(1L);
-        when(zoomRepository.findById(1L)).thenReturn(Optional.of(zoomEntity));
+        when(zoomService.findMeetingsById(1L)).thenReturn(Optional.of(zoomEntity));
         
         // Mood entity setup
         MoodEntity moodEntity = new MoodEntity();
         moodEntity.setValue(10L);
-        when(moodRepository.findById(10L)).thenReturn(Optional.of(moodEntity));
+        when(moodService.findMoodsById(10L)).thenReturn(Optional.of(moodEntity));
         
         // Mock password hash service to return empty string for "password"
         when(passService.getHashedPass("password")).thenReturn("");
