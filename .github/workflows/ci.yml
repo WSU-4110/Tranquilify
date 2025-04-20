@@ -19,10 +19,15 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     
+    - name: Grant execute permission for gradlew
+      run: chmod +x Backend/gradlew
+    
     - name: Build with Gradle
+      working-directory: ./Backend
       run: ./gradlew build
     
     - name: Run Java tests
+      working-directory: ./Backend
       run: ./gradlew test
     
     - name: Set up Node.js
@@ -30,8 +35,10 @@ jobs:
       with:
         node-version: '16'
     
-    - name: Install JS dependencies  
+    - name: Install JS dependencies
+      working-directory: ./Frontend/Tranquilify
       run: npm install
     
     - name: Run JavaScript tests
+      working-directory: ./Frontend/Tranquilify
       run: npm test
