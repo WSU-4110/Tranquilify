@@ -11,7 +11,11 @@
     "lint": "expo lint"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "verbose": true,
+    "collectCoverage": true,
+    "coverageReporters": ["text", "html"],
+    "testEnvironment": "jsdom"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
