@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment'
 
-const API_URL =  `http://172.20.20.20:9191/api/notes`;
+const API_URL =  `http://35.16.35.232:9191/api/notes`;
 
 //get journal entries
 export const getEntry = async (userToken) => {
