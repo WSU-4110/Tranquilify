@@ -49,4 +49,4 @@ jobs:
 
       - name: Build Expo application
         working-directory: ./Frontend/Tranquilify
-        run: npx expo build:ios
+        run: npx expo prebuild --no-install
