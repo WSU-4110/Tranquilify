@@ -46,3 +46,7 @@ jobs:
       - name: Run JavaScript tests
         working-directory: ./Frontend/Tranquilify
         run: npm test
+
+      - name: Build Expo application
+        working-directory: ./Frontend/Tranquilify
+        run: npx expo build:ios
